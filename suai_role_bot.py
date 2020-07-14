@@ -23,8 +23,6 @@ class Bot(commands.Bot):
         print('My name: ' + self.user.name)
 
 
-#TOKEN = 'NzI3NTM4NDIyMzkwMDYzMTE0.XvtTLw.UVpYHMZHCZQvd8zTSmPImE5HvHw'
-
 bot = Bot() # создаем экземпляр бота
 with open("config.json", "r") as conf:
     config = json.load(conf)
