@@ -138,6 +138,8 @@ class cmd_cog(commands.Cog):
             if after.nick.find(group.name) != -1:
                 await after.add_roles(group)
                 await after.remove_roles(invalid_role)
+                channel = after.guild.system_channel
+                await channel.send('Группа установлена для {0.mention}.'.format(after._user))
                 return
 
     ### Жесткий режим ###
@@ -183,7 +185,8 @@ class cmd_cog(commands.Cog):
                     if after.nick.find(group.name) != -1:
                         await after.add_roles(group)
                         await after.remove_roles(invalid_role)
-                        await after.send('Группа установлена.')
+                        channel = after.guild.system_channel
+                        await channel.send('Группа установлена для {0.mention}.'.format(after._user))
                         return
         await after.send('Такого студента нет в списке.')
     ### Прослушки событий ###
@@ -194,7 +197,7 @@ class cmd_cog(commands.Cog):
         
         channel = member.guild.system_channel
         if channel is not None:
-            await channel.send('Добро пожаловать на сервер - {0.mention}. Команды бота: здесь будут.'.format(member))
+            await channel.send('Добро пожаловать на сервер - {0.mention}. Команды бота: 1)!register <группа> <Фамилия> <Имя> <Отчество>.'.format(member))
             await member.add_roles(invalid_role, reason='New member')
 
     @commands.Cog.listener()

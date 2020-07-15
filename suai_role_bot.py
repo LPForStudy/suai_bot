@@ -22,7 +22,6 @@ class Bot(commands.Bot):
     async def on_ready(self): # Одноразовый ивент, когда все системы бота запущены
         print('My name: ' + self.user.name)
 
-
 bot = Bot() # создаем экземпляр бота
 with open("config.json", "r") as conf:
     config = json.load(conf)
