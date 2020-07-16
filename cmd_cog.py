@@ -7,8 +7,6 @@ from googleapiclient import discovery
 from oauth2client.service_account import ServiceAccountCredentials
 import httplib2
 
-
-sheet=gSheet()
 class cmd_cog(commands.Cog):
     groups_number = 5 # Здесь задается список групп в таблице
     
@@ -128,6 +126,9 @@ class cmd_cog(commands.Cog):
         
         if invalid_role not in after.roles:
             return
+        #Если пользователь обнулил свой ник
+        if after.nick == None:
+            return
 
         bot_role = get(before.guild.roles, name = self.bot_role_name)
         groups = before.guild.roles
@@ -159,6 +160,10 @@ class cmd_cog(commands.Cog):
         if invalid_role not in after.roles:
             return
         
+        #Если пользователь обнулил свой ник
+        if after.nick == None:
+            return
+
         #Роль бота нужна для позиционирования
         bot_role = get(before.guild.roles, name = self.bot_role_name)
         #Загружаем и отсеиваем роли. Роль неправильных юзеров будет над everyone, нужные между ней и ролью бота
@@ -176,7 +181,9 @@ class cmd_cog(commands.Cog):
             return
         #Получаем данные с листа        
         self.students = self.sheet.getStudents(self.service, self.spreadsheetId, self.title[req_id], self.table, self.students, self.groups_number)
-        
+        #Отправлять на сервер, а не в личные сообщения
+        channel = after.guild.system_channel
+
         #Ищем в полученном массиве студентов
         for student in self.students:
             if after.nick.lower().find(student[0].lower()) != -1:
@@ -185,10 +192,10 @@ class cmd_cog(commands.Cog):
                     if after.nick.find(group.name) != -1:
                         await after.add_roles(group)
                         await after.remove_roles(invalid_role)
-                        channel = after.guild.system_channel
+                        
                         await channel.send('Группа установлена для {0.mention}.'.format(after._user))
                         return
-        await after.send('Такого студента нет в списке.')
+        await channel.send('Такого студента нет в списке {0.mention}.'.format(after._user))
     ### Прослушки событий ###
     @commands.Cog.listener()
     async def on_member_join(self, member):
